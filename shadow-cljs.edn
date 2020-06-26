@@ -1,0 +1,33 @@
+{:dependencies [[org.clojure/tools.reader "1.3.2"]
+                [binaryage/devtools       "1.0.2"]
+                [reagent "0.10.0"]
+                [re-frame "0.12.0"]]
+
+ :source-paths ["test"]
+
+ :builds {:browser-test-bootstrap
+          {:target     :bootstrap
+           :output-dir "target/browser-test/bootstrap"
+           :exclude    #{cljs.js}
+           :entries    [cljs.js reagent.core re-frame.core goog.math.Long goog.math.Vec2 goog.math.Vec3 goog.math.Integer]
+           :macros     []}
+
+          :browser-test
+          {:target           :browser-test
+           :test-dir         "target/browser-test"
+           :devtools         {:http-port 8021
+                              :http-root "target/browser-test"}
+           :compiler-options {:pretty-print true}}
+
+          :karma-test-bootstrap
+          {:target     :bootstrap
+           :output-dir "target/karma/bootstrap"
+           :exclude    #{cljs.js}
+           :entries    [cljs.js reagent.core re-frame.core goog.math.Long goog.math.Vec2 goog.math.Vec3 goog.math.Integer]
+           :macros     []}
+
+          :karma-test
+          {:target           :karma
+           :ns-regexp        ".*-test$"
+           :output-to        "target/karma/test.js"
+           :compiler-options {:pretty-print true}}}}

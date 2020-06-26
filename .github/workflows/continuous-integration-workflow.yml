@@ -1,0 +1,41 @@
+name: ci
+on: [push]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-18.04
+    container:
+      # Ref: https://github.community/t5/GitHub-Actions/docker-pull-from-public-GitHub-Package-Registry-fail-with-quot/m-p/32782
+      image: superstructor/clojure:openjdk-11-lein-2.9.1-node-browsers
+    steps:
+      - uses: actions/checkout@v1
+      - name: Maven cache
+        id: maven-cache
+        uses: actions/cache@v1
+        with:
+          path: /root/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('project.clj') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: npm cache
+        id: npm-cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package.json')-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      - name: shadow-cljs compiler cache
+        uses: actions/cache@v1
+        with:
+          path: .shadow-cljs
+          key: ${{ runner.os }}-shadow-cljs-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-shadow-cljs-
+      - run: |
+        npm -g install karma-cli
+        npm -g install shadow-cljs
+        npm install
+        shadow-cljs compile karma-test karma-test-bootstrap
+        karma start --single-run

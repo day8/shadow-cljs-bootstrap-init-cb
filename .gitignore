@@ -1,0 +1,8 @@
+/.idea/
+/.shadow-cljs/
+/node_modules/
+/resources/public/bootstrap/
+/resources/public/js/
+/*.iml
+/pom.xml
+/target/
